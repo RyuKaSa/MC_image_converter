@@ -10,7 +10,6 @@ def find_closest_rgb(rgb, rgb_values):
     closest_distance = float('inf')
     
     for block, block_rgb in rgb_values.items():
-        # Calculate the Euclidean distance between the current pixel and block's RGB
         distance = math.sqrt(sum((rgb[i] - block_rgb[i]) ** 2 for i in range(3)))
         if distance < closest_distance:
             closest_distance = distance
@@ -25,20 +24,45 @@ def resize_image(image, width):
     print(f"Resizing image to width {width}, height {new_height}")
     return image.resize((width, new_height)), new_height
 
-# Function to get the correct PNG file from manual.json
-def get_texture_file(block_name, manual_data):
-    if block_name in manual_data:
-        textures = manual_data[block_name]
-        # Prefer the side texture if available
-        for texture in textures:
-            if 'side' in texture:
-                return texture
-        return textures[0]  # Return the first texture if no "side" texture is found
-    return None
+# Function to generate setblock commands and undo commands (to remove blocks)
+def generate_setblock_commands(image, rgb_values, starting_position, output_json_path):
+    setblock_commands = []
+    undo_commands = []  # To store the undo commands (setblock to air)
+    start_x, start_y, start_z = starting_position
+    
+    # Adjust Y position to ensure correct height
+    adjusted_start_y = start_y + image.height - 1
+
+    for x in range(image.width):
+        for y in range(image.height):
+            pixel_rgb = image.getpixel((x, y))
+            closest_block = find_closest_rgb(pixel_rgb, rgb_values)
+
+            # Apply horizontal flip: Reverse the X coordinate
+            flipped_x = image.width - 1 - x  # This flips the X-axis
+            rotated_y = y  # Y stays the same (no rotation or flipping vertically)
+
+            # Create the normal setblock command with flipped X
+            command = f"/setblock {start_x + flipped_x} {adjusted_start_y - rotated_y} {start_z} {closest_block}"
+            setblock_commands.append(command)
+            
+            # Create the undo setblock command (set to air)
+            undo_command = f"/setblock {start_x + flipped_x} {adjusted_start_y - rotated_y} {start_z} minecraft:air"
+            undo_commands.append(undo_command)
+
+    # Save the normal setblock commands to a JSON file
+    with open(output_json_path, 'w') as output_file:
+        json.dump(setblock_commands, output_file, indent=4)
+    print(f"Setblock commands saved to {output_json_path}")
+    
+    # Save the undo commands to a second JSON file (with '_undo' suffix)
+    undo_output_path = output_json_path.replace(".json", "_undo.json")
+    with open(undo_output_path, 'w') as undo_file:
+        json.dump(undo_commands, undo_file, indent=4)
+    print(f"Undo setblock commands saved to {undo_output_path}")
 
 # Function to create a PNG output using the full block textures without scaling them
 def create_png_output(image, rgb_values, manual_data, output_path, texture_folder, block_size):
-    # Calculate the output image size based on the resized image dimensions and block texture size
     output_width = image.width * block_size
     output_height = image.height * block_size
     output_image = Image.new('RGB', (output_width, output_height))
@@ -56,10 +80,8 @@ def create_png_output(image, rgb_values, manual_data, output_path, texture_folde
             if texture_file_name:
                 texture_file = os.path.join(texture_folder, texture_file_name)
 
-                # Check if the texture file exists
                 if os.path.exists(texture_file):
                     block_texture = Image.open(texture_file).convert('RGB')
-                    # Paste the full block texture at the correct position in the output image
                     output_image.paste(block_texture, (x * block_size, y * block_size))
                 else:
                     print(f"Texture not found for block: {closest_block}")
@@ -78,37 +100,27 @@ def create_schematic_output(image, rgb_values, output_schem_path, orientation='v
             pixel_rgb = image.getpixel((x, y))
             closest_block = find_closest_rgb(pixel_rgb, rgb_values)
             
-            # Place blocks either flat (on XZ plane) or vertical (on XY plane with 180-degree flip on Y-axis)
             if orientation == 'vertical':
-                flipped_y = image.height - y - 1  # Flip the Y-axis to achieve the 180-degree flip
-                schem.setBlock((x, flipped_y, 0), closest_block)  # Standing up vertically (XY plane)
+                flipped_y = image.height - y - 1  # Flip the Y-axis
+                schem.setBlock((x, flipped_y, 0), closest_block)
             else:
-                schem.setBlock((x, 0, y), closest_block)  # Laying flat (XZ plane)
+                schem.setBlock((x, 0, y), closest_block)
 
-    # If no directory is provided, use the current working directory
     output_folder = os.path.dirname(output_schem_path)
     if output_folder == '':
         output_folder = '.'
 
-    # Ensure the folder exists
     os.makedirs(output_folder, exist_ok=True)
-
-    # Save the schematic file with correct path handling
     schem.save(output_folder, os.path.basename(output_schem_path).replace('.schem', ''), mcschematic.Version.JE_1_18_2)
     print(f"Schematic file saved at {os.path.join(output_folder, os.path.basename(output_schem_path))}")
 
-def generate_setblock_commands(image, rgb_values, starting_position, output_json_path):
-    setblock_commands = []
-    start_x, start_y, start_z = starting_position
-    
-    for x in range(image.width):
-        for y in range(image.height):
-            pixel_rgb = image.getpixel((x, y))
-            closest_block = find_closest_rgb(pixel_rgb, rgb_values)
-            command = f"/setblock {start_x + x} {start_y + y} {start_z} {closest_block}"
-            setblock_commands.append(command)
-
-    with open(output_json_path, 'w') as output_file:
-        json.dump(setblock_commands, output_file, indent=4)
-    
-    print(f"Setblock commands saved to {output_json_path}")
+# Function to get the correct PNG file from manual.json
+def get_texture_file(block_name, manual_data):
+    if block_name in manual_data:
+        textures = manual_data[block_name]
+        # Prefer the side texture if available
+        for texture in textures:
+            if 'side' in texture:
+                return texture
+        return textures[0]  # Return the first texture if no "side" texture is found
+    return None

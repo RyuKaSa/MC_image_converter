@@ -1,6 +1,7 @@
 import json
 import os
 import asyncio
+import websockets  # WebSocket communication
 from PIL import Image
 from scripts.helper_functions import resize_image, generate_setblock_commands, create_png_output, create_schematic_output
 
@@ -36,24 +37,34 @@ def get_user_input():
     return None, None, None, None, None, None
 
 # Function to send WebSocket commands
-async def send_commands_in_one_go(command_block):
-    uri = "ws://localhost:8887"  # WebSocket port configured in your server
+async def send_command(command):
+    uri = "ws://localhost:8887"  # Ensure this is the WebSocket port configured in your server
     try:
+        # Connect to the WebSocket for each command
         async with websockets.connect(uri) as websocket:
-            await websocket.send(f"Command {command_block}")
+            # print(f"Sending command: {command}")  # Debugging print
+            await websocket.send(f"Command {command}")
     except Exception as e:
-        pass  # Ignore errors silently
+        print(f"Error during WebSocket communication: {e}")  # Print any errors
 
-# Function to send setblock commands via WebSocket
+# Function to send all commands from the JSON file
 async def send_commands_from_json(json_file):
+    # Load the setblock commands from the JSON file
     with open(json_file, 'r') as file:
         commands = json.load(file)
+    
+    # Send a dummy command first
+    await send_command("/say Starting setblock commands...")
 
+    # Duplicate the first command and append it to the end of the list
     first_command = commands[0]
-    commands.append(first_command)  # Duplicate the first command at the end
+    commands.append(first_command)
 
+    # Join all commands with new lines
     command_block = '\n'.join([f"Command {command}" for command in commands])
-    await send_commands_in_one_go(command_block)
+
+    # Send all commands at once
+    await send_command(command_block)
 
 # Main function to convert image and process output
 def convert_and_run(input_image_path, rgb_values_path, manual_json_path, output_type='png', width=16, texture_folder='textures', start_coords=(0, 60, 0), websocket_run=False):
@@ -86,6 +97,7 @@ def convert_and_run(input_image_path, rgb_values_path, manual_json_path, output_
 
         # Optionally send the commands via WebSocket
         if websocket_run:
+            print("Preparing to send commands via WebSocket...")  # Debugging print
             asyncio.get_event_loop().run_until_complete(send_commands_from_json(output_json_path))
 
 # Main program logic
