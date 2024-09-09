@@ -28,7 +28,7 @@ def get_user_input():
 
     # Setblock specific inputs
     if output_format == 'setblock':
-        start_coords = input("Enter the starting coordinates (x, y, z) separated by commas (default is 0, 60, 0): ").strip() or "0,60,0"
+        start_coords = input("Enter the starting coordinates (x,y,z) separated by commas (default is 0,60,0): ").strip() or "0,60,0"
         start_coords = tuple(map(int, start_coords.split(',')))
         websocket_run = input("Do you want to send the commands via WebSocket (yes/no)? ").strip().lower() == 'yes'
         return output_format, input_image_path, width, None, start_coords, websocket_run
