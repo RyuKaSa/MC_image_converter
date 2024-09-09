@@ -102,7 +102,7 @@ Should the structure be vertical or horizontal (vertical/horizontal)? horizontal
 2. **Follow the prompts:**
    - Choose the output format as `setblock`.
    - Enter the image path and specify the width.
-   - Enter the starting coordinates for block placement (default is `0, 60, 0`).
+   - Enter the starting coordinates for block placement (default is `0,60,0`).
    - Specify if the commands should be sent via WebSocket to your Minecraft server.
    (Be careful with this option as it will place blocks in your server, potentially overwriting existing structures.)
 
@@ -116,7 +116,7 @@ _Example:_
 Please enter the output format (png, schem, setblock): setblock
 Enter the path to the image file: images/starter_image.png
 Enter the width (default is 16): 200
-Enter the starting coordinates (x, y, z) separated by commas (default is 0, 60, 0): 0, 60, 10600
+Enter the starting coordinates (x,y,z) separated by commas (default is 0,60,0): 0,60,10600
 Do you want to send the commands via WebSocket (yes/no)? yes
 ```
 
