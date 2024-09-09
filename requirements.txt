@@ -1,0 +1,3 @@
+Pillow          # For image processing
+websockets      # For WebSocket communication
+mcschematic     # For creating Minecraft schematic files
