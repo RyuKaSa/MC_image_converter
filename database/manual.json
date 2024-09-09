@@ -284,30 +284,6 @@
     "minecraft:oxidized_cut_copper": [
         "oxidized_cut_copper.png"
     ],
-    "minecraft:chiseled_copper": [
-        "chiseled_copper.png"
-    ],
-    "minecraft:exposed_chiseled_copper": [
-        "exposed_chiseled_copper.png"
-    ],
-    "minecraft:weathered_chiseled_copper": [
-        "weathered_chiseled_copper.png"
-    ],
-    "minecraft:oxidized_chiseled_copper": [
-        "oxidized_chiseled_copper.png"
-    ],
-    "minecraft:copper_bulb": [
-        "copper_bulb.png"
-    ],
-    "minecraft:exposed_copper_bulb": [
-        "exposed_copper_bulb.png"
-    ],
-    "minecraft:weathered_copper_bulb": [
-        "weathered_copper_bulb.png"
-    ],
-    "minecraft:oxidized_copper_bulb": [
-        "oxidized_copper_bulb.png"
-    ],
     "minecraft:raw_iron_block": [
         "raw_iron_block.png"
     ],
@@ -778,20 +754,6 @@
     ],
     "minecraft:bedrock": [
         "bedrock.png"
-    ],
-    "minecraft:chiseled_tuff": [
-        "chiseled_tuff.png",
-        "chiseled_tuff_top.png"
-    ],
-    "minecraft:polished_tuff": [
-        "polished_tuff.png"
-    ],
-    "minecraft:tuff_bricks": [
-        "tuff_bricks.png"
-    ],
-    "minecraft:chiseled_tuff_bricks": [
-        "chiseled_tuff_bricks.png",
-        "chiseled_tuff_bricks_top.png"
     ],
     "minecraft:birch_log": [
         "birch_log.png",

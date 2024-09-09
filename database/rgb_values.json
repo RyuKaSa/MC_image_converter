@@ -439,46 +439,6 @@
         153,
         126
     ],
-    "minecraft:chiseled_copper": [
-        184,
-        100,
-        73
-    ],
-    "minecraft:exposed_chiseled_copper": [
-        154,
-        119,
-        100
-    ],
-    "minecraft:weathered_chiseled_copper": [
-        104,
-        150,
-        111
-    ],
-    "minecraft:oxidized_chiseled_copper": [
-        83,
-        161,
-        132
-    ],
-    "minecraft:copper_bulb": [
-        156,
-        86,
-        57
-    ],
-    "minecraft:exposed_copper_bulb": [
-        135,
-        107,
-        89
-    ],
-    "minecraft:weathered_copper_bulb": [
-        92,
-        126,
-        99
-    ],
-    "minecraft:oxidized_copper_bulb": [
-        70,
-        132,
-        109
-    ],
     "minecraft:raw_iron_block": [
         166,
         135,
@@ -1223,26 +1183,6 @@
         85,
         85,
         85
-    ],
-    "minecraft:chiseled_tuff": [
-        89,
-        94,
-        86
-    ],
-    "minecraft:polished_tuff": [
-        97,
-        104,
-        99
-    ],
-    "minecraft:tuff_bricks": [
-        98,
-        102,
-        95
-    ],
-    "minecraft:chiseled_tuff_bricks": [
-        98,
-        103,
-        95
     ],
     "minecraft:birch_log": [
         216,
